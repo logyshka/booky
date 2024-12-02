@@ -1,0 +1,19 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body::before {
+    content: "";
+    background: url("/static/images/background.webp");
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.65;
+    z-index: -1;
+}
+
+.vertical-banner {
+    rotate: 90deg;
+}

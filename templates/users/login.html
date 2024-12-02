@@ -1,0 +1,67 @@
+{% load static %}
+{% load widget_tweaks %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <title>Login</title>
+</head>
+<body>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col">&nbsp;</div>
+            <div class="col-sm-6">
+                <form
+                        method="POST"
+                        action="{% url 'login' %}"
+                        class="p-3 mt-3 rounded-3 shadow "
+                >
+                    <h1 class="text-center mb-3">Login</h1>
+
+                    {% csrf_token %}
+
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+
+                    {% for field in form.visible_fields %}
+                        <div class="form-group mb-2">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                            {% if field.errors %}
+                                {{ field|add_class:"form-control is-invalid" }}
+                            {% else %}
+                                {{ field|add_class:"form-control " }}
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <span class="help-block text-danger">
+                                    {{ error }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Login
+                        </button>
+                        <a class="btn btn-primary btn-sm" href="{% url 'register' %}">
+                            I don't have an account
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="col">&nbsp;</div>
+        </div>
+    </div>
+</main>
+</body>
+
+</html>

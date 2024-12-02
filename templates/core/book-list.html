@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Главная
+{% endblock %}
+
+{% block content %}
+    {% if books.count == 0 %}
+        <div class="d-flex justify-content-center">
+            <h1>Ничего не найдено</h1>
+        </div>
+    {% else %}
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+            {% for book in page_obj %}
+                <div class="col mb-3">
+                    <div class="card h-100">
+                        {% if book.genres.count > 0 %}
+                            <div class="card-header">
+                                {% for genre in book.genres.all %}
+                                    {% with genre.id|stringformat:"s" as genre_id %}
+                                        {% if genre_id in selected_genres %}
+                                            <!-- Если жанр уже выбран, удаляем его из фильтрации -->
+                                            <span class="badge rounded-pill bg-success">
+                                                <a href="?
+                                                        {% for g in selected_genres %}{% if g != genre_id %}genres={{ g }}&{% endif %}{% endfor %}"
+                                                   class="text-light text-decoration-none">
+                                                    {{ genre.name }}
+                                                </a>
+                                            </span>
+                                        {% else %}
+                                            <!-- Если жанр не выбран, добавляем его -->
+                                            <span class="badge rounded-pill bg-secondary">
+                                                <a href="?{% for g in selected_genres %}genres={{ g }}&{% endfor %}genres={{ genre.id }}"
+                                                   class="text-light text-decoration-none">
+                                                    {{ genre.name }}
+                                                </a>
+                                            </span>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-title fw-bold">
+                                {{ book.title }}
+                            </div>
+                            <div class="card-subtitle">
+                                Автор: {{ book.author }}
+                            </div>
+                            <p class="text-secondary text-start">
+                                {{ book.description|truncatewords:10 }}
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a type="button" href="{% url 'book' pk=book.pk %}"
+                               class="btn btn-primary position-relative fw-bold">
+                                Перейти к книге
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <i class="fa fa-star me-1"></i>
+                                {{ book.rating }}
+                            </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <nav class="mt-3 p-3 d-flex justify-content-center w-100">
+            {% include 'core/book-paginator.html' %}
+        </nav>
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {{ book.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                {% for genre in book.genres.all %}
+                    <span class="badge text-bg-info">{{ genre.name }}</span>
+                {% endfor %}
+            </div>
+            <h1 class="fw-bold mt-3 text-center">{{ book.title }}</h1>
+            <h2 class="fw-light mt-3 text-center">Автор: {{ book.author.fullname }}</h2>
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                <span class="btn btn-primary">
+                    Рейтинг
+                    <span class="badge text-bg-danger text-light">
+                        <i class="fa fa-star me-1"></i>
+                        {{ book.rating }}
+                    </span>
+                </span>
+                {% if user.is_authenticated %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                        {% if rating_form.current_rating %}
+                            Ваша оценка
+                            <span class="badge text-bg-danger text-light">
+                            <i class="fa fa-star me-1"></i>
+                            {{ rating_form.current_rating }}
+                        {% else %}
+                            Поставить оценку
+                        {% endif %}
+                        </span>
+                    </button>
+                {% endif %}
+            </div>
+            <div class="d-grid m-3">
+                <h3 class="fw-light fs-6">
+                    {{ book.description }}
+                </h3>
+            </div>
+        </div>
+        {% if user.is_authenticated %}
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Поставьте оценку</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'rating' book=book.pk %}" method="post">
+                                {% csrf_token %}
+                                {% for field in rating_form.visible_fields %}
+                                    <div class="form-group mb-2">
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                                        {% if field.errors %}
+                                            {{ field|add_class:"form-control is-invalid" }}
+                                        {% else %}
+                                            {{ field|add_class:"form-control " }}
+                                        {% endif %}
+
+                                        {% for error in field.errors %}
+                                            <span class="help-block text-danger">
+                                    {{ error }}
+                                </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    Поставить оценку
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <script src="{% static 'js/scripts/book-detail.js' %}"></script>
+{% endblock %}

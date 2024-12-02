@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.webp' %}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        const CSRF_TOKEN = "{{ csrf_token }}";
+    </script>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+
+    <title>{% block title %} {% endblock %}</title>
+</head>
+<body>
+
+<div class="container-fluid p-0 m-0 overflow-y-scroll">
+    <div class="d-flex flex-column align-items-center mx-5">
+        <div class="d-flex flex-column w-md-75">
+            <nav class="navbar sticky-top navbar-expand-lg bg-light rounded-4 mt-3 z-3 shadow" id="navbar">
+                <div class="container-fluid">
+                    <a class="navbar-brand h1 fs-1 ms-3" href="{% url 'home' %}">
+                        <div class="d-flex align-items-center gap-2">
+                            Booky
+                        </div>
+                    </a>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon">
+                        </span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item me-lg-3">
+                                <form class="d-flex" role="search" method="get" action="">
+                                    <input class="form-control me-2" type="search" name="search" placeholder="Поиск"
+                                           aria-label="Search" value="{% if search %}{{ search }}{% endif %}">
+                                    <button class="btn btn-outline-success" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </form>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#contacts">Контакты</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav">
+
+                            {% if request.user.is_authenticated %}
+                                <li class="nav-item">
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button class="btn">Выйти</button>
+                                    </form>
+                                </li>
+                            {% else %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                       data-bs-toggle="dropdown" aria-expanded="false">Регистрация/Вход</a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'register' %}">
+                                                Регистрация
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'login' %}">
+                                                Вход
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="mt-3 rounded-4 w-100 z-0">
+                <a href="https://1xbet-game.com/" class="w-100" target="_blank">
+                    <img class="sticky-top w-100 d-block" src="{% static 'images/banner.gif' %}" alt="">
+                </a>
+            </div>
+
+
+            <div class="mt-3 p-3 rounded-4 bg-light shadow">
+                {% block content %} {% endblock %}
+            </div>
+
+
+            <div class="mt-3 p-3 rounded-4 bg-light shadow mb-3">
+
+                <div id="contacts"
+                     class="d-flex flex-column flex-md-row gap-3 justify-content-between align-items-start h-100 text-secondary">
+
+                    <div class="d-flex flex-column h-100 align-items-start">
+                        <span>Следите за новостями</span>
+                        <div class="d-flex justify-content-start gap-2 align-items-center fs-3">
+                            <a href="https://vk.com">
+                                <i class="fa-brands fa-vk"></i>
+                            </a>
+                            <a href="https://instagra.com">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="https://t.me">
+                                <i class="fa-brands fa-telegram"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column h-100 align-items-start">
+                        <span>Служба поддержки</span>
+                        <div class="d-flex justify-content-start gap-2 align-items-center">
+                            <div>
+                                <a href="tel:+78003332737">
+                                    8 800 333 27 37
+                                </a>
+                            </div>
+
+                            <a href="mailto:support@mybook.by">
+                                support@booky.by
+                            </a>
+                        </div>
+                    </div>
+                    <div class="d-flex h-100 align-items-start">
+                        <img src="{% static 'images/stb.svg' %}" alt="" width="60" height="60">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
